@@ -1,3 +1,6 @@
+#ifndef VALUE_H
+#define VALUE_H
+
 typedef struct Value {
     int type;
     int ival;
@@ -16,3 +19,5 @@ extern Value *newValueDouble(double);
 extern Value *newValueString(char *);
 extern Value *newValueVariable(char *);
 extern Value *newValueOperator(char *);
+
+#endif

@@ -1,34 +1,33 @@
 #include <stdlib.h>
 #include "stack.h"
 
-Stack *top = NULL;
-
 /*
  * PUBLIC FUNCTIONS
  */
 
-void push(char c) {
-    Stack *s = malloc(sizeof(Stack));
-    s -> oper = c;
-    if (top == NULL)
-        s -> below = NULL;
-    else 
-        s -> below = top;
-    top = s;
+void push(Stack *s, Value *v) {
+    Node *stackTop = s -> top;
+    Node *node = newNode(v);
+    node -> next = stackTop == NULL ? NULL : stackTop;
+    s -> top = node;
 };
 
-char pop() {
-    char c = top -> oper;
-    Stack *temp = top;
-    top = top -> below;
+Value *pop(Stack *s) {
+    Value *v = s -> top -> val;
+    Node *temp = s -> top;
+    s -> top = s -> top -> next;
     free(temp);
-    return c;
+    return v;
+};
+
+Stack *newStack(void) {
+    Stack *s = malloc(sizeof(Stack));
+    s -> top = NULL;
+    s -> priority = 0;
+    return s;
 };
 
 /*
  * PRIVATE FUNCTIONS
  */
 
-void create() {
-    top = NULL;
-};
