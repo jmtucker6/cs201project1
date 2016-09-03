@@ -5,6 +5,9 @@
  * PUBLIC FUNCTIONS
  */
 
+/*
+ * Push onto front of stack
+ */
 void push(Stack *s, Value *v) {
     Node *stackTop = s -> top;
     Node *node = newNode(v);
@@ -12,6 +15,9 @@ void push(Stack *s, Value *v) {
     s -> top = node;
 };
 
+/*
+ * Pop from front of stack
+ */
 Value *pop(Stack *s) {
     Value *v = s -> top -> val;
     Node *temp = s -> top;
@@ -20,6 +26,9 @@ Value *pop(Stack *s) {
     return v;
 };
 
+/*
+ * Creates a new stack
+ */
 Stack *newStack(void) {
     Stack *s = malloc(sizeof(Stack));
     s -> top = NULL;

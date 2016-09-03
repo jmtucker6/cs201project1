@@ -3,47 +3,57 @@
 #include "queue.h"
 #include "fatal.h"
 
-static bool isEmpty(Queue *);
 
 /*
  * PUBLIC FUNCTIONS
  */
 
+/*
+ * Enqueues onto back (tail) of linked list
+ */
 void enqueue(Queue *q, Value *v) {
     Node *node = newNode(v);
-    if (q -> first == NULL)
-        q -> first = node;
-    if (q -> last != NULL)
-        q -> last -> next = node;
-    q -> last = node;    
+    if (q -> head == NULL)
+        q -> head = node;
+    if (q -> tail != NULL)
+        q -> tail -> next = node;
+    q -> tail = node;    
 };
 
+/*
+ * Dequeues from front (head) of linked list
+ */
 Value *dequeue(Queue *q) {
     if (isEmpty(q))
-        Fatal("Cannot dequeue from empty queue");
-    Value *v = q -> first -> val;
-    Node *temp = q -> first;
-    if (q -> first != q -> last)
-        q -> first = q -> first -> next;
+        Fatal("Cannot dequeue from empty queue\n");
+    Value *v = q -> head -> val;
+    Node *temp = q -> head;
+    if (q -> head != q -> tail)
+        q -> head = q -> head -> next;
     else {
-        q -> first = NULL;
-        q -> last = NULL;
+        q -> head = NULL;
+        q -> tail = NULL;
     }
     free(temp);
     return v;
 };
 
+/*
+ * Returns an empty queue
+ */
 Queue *newQueue(void) {
     Queue *q = malloc(sizeof(Queue));
-    q -> first = NULL;
-    q -> last = NULL;
+    if (q == 0)
+        Fatal("Insufficient space for new queue\n");
+    q -> head = NULL;
+    q -> tail = NULL;
     return q;
 };
 
-/*
- * PRIVATE FUNCTIONS
- */
 
-static bool isEmpty(Queue *q) {
-    return (q -> first == NULL && q -> last == NULL) ? true : false;
+/*
+ * Checks if queue is empty
+ */
+bool isEmpty(Queue *q) {
+    return (q -> head == NULL && q -> tail == NULL) ? true : false;
 };

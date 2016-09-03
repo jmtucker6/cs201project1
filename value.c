@@ -17,30 +17,45 @@ int OPERATOR = 4;
  * PUBLIC FUNCTIONS
  */
 
+/*
+ * Creates an integer value
+ */
 Value *newValueInt(int i) {
     Value *val = newValue(INTEGER);
     val -> ival = i;
     return val;
 };
 
+/*
+ * Creates an double value
+ */
 Value *newValueDouble(double d) {
     Value *val = newValue(DOUBLE);
     val -> dval = d;
     return val;
 };
 
+/*
+ * Creates an string value
+ */
 Value *newValueString(char *s) {
     Value *val = newValue(STRING);
     val -> sval = s;
     return val;
 };
 
+/*
+ * Creates an variable value
+ */
 Value *newValueVariable(char *s) {
     Value *val = newValue(VARIABLE);
     val -> sval = s;
     return val;
 };
 
+/*
+ * Creates an operator value
+ */
 Value *newValueOperator(char *s) {
     Value *val = newValue(OPERATOR);
     val -> sval = s;

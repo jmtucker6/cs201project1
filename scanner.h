@@ -1,5 +1,7 @@
 #ifndef SCANNER_H
 #define SCANNER_H
+#include <stdlib.h>
+#include <stdio.h>
 /* VERSION 1.2
  *
  * scanner.h - public interface to scanner.c, the scanner module
