@@ -12,6 +12,15 @@ int DOUBLE = 1;
 int STRING = 2;
 int VARIABLE = 3;
 int OPERATOR = 4;
+int SEMICOLON = 5;
+
+/*
+ * CONSTANT PRECEDENCE LEVELS
+ */
+
+int PARENTHESES = 1;
+int ADD_SUB = 2;
+int MULT_DIV = 3;
 
 /*
  * PUBLIC FUNCTIONS
@@ -27,7 +36,7 @@ Value *newValueInt(int i) {
 };
 
 /*
- * Creates an double value
+ * Creates a double value
  */
 Value *newValueDouble(double d) {
     Value *val = newValue(DOUBLE);
@@ -36,7 +45,7 @@ Value *newValueDouble(double d) {
 };
 
 /*
- * Creates an string value
+ * Creates a string value
  */
 Value *newValueString(char *s) {
     Value *val = newValue(STRING);
@@ -45,7 +54,7 @@ Value *newValueString(char *s) {
 };
 
 /*
- * Creates an variable value
+ * Creates a variable value
  */
 Value *newValueVariable(char *s) {
     Value *val = newValue(VARIABLE);
@@ -58,6 +67,15 @@ Value *newValueVariable(char *s) {
  */
 Value *newValueOperator(char *s) {
     Value *val = newValue(OPERATOR);
+    val -> sval = s;
+    return val;
+};
+
+/*
+ * Creates a semicolon value
+ */
+Value *newValueSemicolon(char *s) {
+    Value *val = newValue(SEMICOLON);
     val -> sval = s;
     return val;
 };
