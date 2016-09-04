@@ -68,6 +68,12 @@ Value *newValueVariable(char *s) {
 Value *newValueOperator(char *s) {
     Value *val = newValue(OPERATOR);
     val -> sval = s;
+    if (*s == '+' || *s == '-')
+        val -> ival = ADD_SUB;
+    else if (*s == '*' || *s == '/')
+        val -> ival = MULT_DIV;
+    else 
+        val -> ival = PARENTHESES;
     return val;
 };
 

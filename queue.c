@@ -24,7 +24,7 @@ void enqueue(Queue *q, Value *v) {
  * Dequeues from front (head) of linked list
  */
 Value *dequeue(Queue *q) {
-    if (isEmpty(q))
+    if (isEmptyQueue(q))
         Fatal("Cannot dequeue from empty queue\n");
     Value *v = q -> head -> val;
     Node *temp = q -> head;
@@ -54,6 +54,6 @@ Queue *newQueue(void) {
 /*
  * Checks if queue is empty
  */
-bool isEmpty(Queue *q) {
+bool isEmptyQueue(Queue *q) {
     return (q -> head == NULL && q -> tail == NULL) ? true : false;
 };

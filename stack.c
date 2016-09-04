@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "stack.h"
+#include "fatal.h"
 
 /*
  * PUBLIC FUNCTIONS
@@ -19,6 +20,8 @@ void push(Stack *s, Value *v) {
  * Pop from front of stack
  */
 Value *pop(Stack *s) {
+    if (isEmptyStack(s))
+        Fatal("Cannot pop from an empty stack");
     Value *v = s -> top -> val;
     Node *temp = s -> top;
     s -> top = s -> top -> next;
@@ -34,6 +37,10 @@ Stack *newStack(void) {
     s -> top = NULL;
     s -> priority = 0;
     return s;
+};
+
+bool isEmptyStack(Stack *s) {
+    return (s -> top == NULL) ? true : false;
 };
 
 /*

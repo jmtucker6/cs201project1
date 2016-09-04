@@ -13,6 +13,6 @@ typedef struct Queue {
 extern void enqueue(Queue *, Value *);
 extern Value *dequeue(Queue *);
 extern Queue *newQueue(void);
-extern bool isEmpty(Queue *);
+extern bool isEmptyQueue(Queue *);
 
 #endif

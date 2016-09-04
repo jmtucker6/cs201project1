@@ -1,4 +1,4 @@
-objects = value.o node.o stack.o queue.o scanner.o fatal.o calculon.o
+objects = value.o node.o stack.o queue.o scanner.o fatal.o equationConverter.o calculon.o 
 executables = calculon test/valueTest
 
 calculon : $(objects)
@@ -15,7 +15,9 @@ scanner.o : scanner.c scanner.h
 	gcc -Wall -std=c99 -g -c scanner.c
 fatal.o : fatal.c fatal.h scanner.h
 	gcc -Wall -std=c99 -g -c fatal.c
-calculon.o : calculon.c stack.h queue.h value.h scanner.h
+equationConverter.o : equationConverter.h stack.h queue.h
+	gcc -Wall -std=c99 -g -c equationConverter.c
+calculon.o : calculon.c stack.h queue.h value.h scanner.h equationConverter.h
 	gcc -Wall -std=c99 -g -c calculon.c
 valueTest : value.o scanner.o value.h scanner.h
 	gcc -Wall -std=c99 -g test/valueTest.c scanner.o value.o -o test/valueTest

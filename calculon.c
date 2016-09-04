@@ -7,6 +7,7 @@
 #include "value.h"
 #include "scanner.h"
 #include "fatal.h"
+#include "equationConverter.h"
 
 static Value *readValue(FILE *);
 static void printValue(Value *);
@@ -30,8 +31,9 @@ int main (int argc, char** argv) {
             enqueue(inputQueue, tempValue);
     }
     printf("Queue loaded\n");
-    while(!isEmpty(inputQueue)) {
-        printValue(dequeue(inputQueue));
+    Queue *postFix = convertToPostfix(inputQueue);
+    while(!isEmptyQueue(postFix)) {
+        printValue(dequeue(postFix));
     }
     return 0;
 };
@@ -51,7 +53,7 @@ static Value *readValue(FILE *fp) {
             return NULL;
         if (strchr(token, '.') != 0)
             v = newValueDouble(atof(token));
-        else if (*token == '-' || isdigit(*token))
+        else if ((*token == '-' && strlen(token) > 1)|| isdigit(*token))
             v = newValueInt(atoi(token));
         else if (isalpha(*token))
             v = newValueVariable(token);
@@ -106,8 +108,11 @@ static char *getFileName(int argc, char **argv) {
     return NULL;
 };
 
-/* only -oXXX  or -o XXX options */
-
+/*
+ * Option Function taken from options.c
+ *
+ * only -oXXX or -o XXX options
+ */
 int
 ProcessOptions(int argc, char **argv)
 {
