@@ -6,17 +6,27 @@
 #include "queue.h"
 #include "value.h"
 #include "scanner.h"
+#include "fatal.h"
 
 static Value *readValue(FILE *);
 static void printValue(Value *);
+static bool commandLineHasFilename(int, char**);
+static char *getFileName(int, char**);
+int ProcessOptions(int, char**);
 
-int main (void) {
+int main (int argc, char** argv) {
 
+    ProcessOptions(argc, argv);
+    FILE *fp = NULL;
+    if (commandLineHasFilename(argc, argv))
+        fp = fopen(getFileName(argc, argv), "r");
+    else
+        fp = stdin;
     printf("Enter an equation: ");
     Queue *inputQueue = newQueue();
     Value *tempValue = NULL;
-    while(!feof(stdin)) {
-        if ((tempValue = readValue(stdin)) != NULL)
+    while(!feof(fp)) {
+        if ((tempValue = readValue(fp)) != NULL)
             enqueue(inputQueue, tempValue);
     }
     printf("Queue loaded\n");
@@ -67,3 +77,105 @@ static void printValue(Value *value) {
         printf("%s\n", value -> sval);
     printf("Type: %d\n", value -> type);
 };
+
+/*
+ * Checks if input is from file
+ */
+static bool commandLineHasFilename(int argc, char **argv) {
+    if (argc == 1)
+        return false;
+    int argIndex = 1;
+    while (argIndex < argc) {
+        if (argv[argIndex][0] != '-')
+            return true;
+    }
+    return false;
+
+};
+
+/*
+ * Returns the filename from the commandline
+ */
+static char *getFileName(int argc, char **argv) {
+    int argIndex = 1;
+    while (argIndex < argc) {
+        if (argv[argIndex][0] != '-')
+            return argv[argIndex];
+    }
+    Fatal("No filename found");
+    return NULL;
+};
+
+/* only -oXXX  or -o XXX options */
+
+int
+ProcessOptions(int argc, char **argv)
+{
+    int argIndex;
+    int argUsed;
+    int separateArg;
+    char *arg;
+
+    argIndex = 1;
+
+    while (argIndex < argc && *argv[argIndex] == '-')
+        {
+        /* check if stdin, represented by "-" is an argument */
+        /* if so, the end of options has been reached */
+        if (argv[argIndex][1] == '\0') return argIndex;
+
+        separateArg = 0;
+        argUsed = 0;
+
+        if (argv[argIndex][2] == '\0')
+            {
+            arg = argv[argIndex+1];
+            separateArg = 1;
+            }
+        else
+            arg = argv[argIndex]+2;
+
+        switch (argv[argIndex][1])
+            {
+            /*
+             * when option has an argument, do this
+             *
+             *     examples are -m4096 or -m 4096
+             *
+             *     case 'm':
+             *         MemorySize = atol(arg);
+             *         argUsed = 1;
+             *         break;
+             *
+             *
+             * when option does not have an argument, do this
+             *
+             *     example is -a
+             *
+             *     case 'a':
+             *         PrintActions = 1;
+             *         break;
+             */
+
+            case 'v':
+                printf("Jacob Tucker\n");
+                exit(1);
+                break;
+            case 's':
+                break;
+            case 'N':
+                printf("%s\n", arg);
+                argUsed = 1;
+                break;
+            default:
+                Fatal("option %s not understood\n",argv[argIndex]);
+            }
+
+        if (separateArg && argUsed)
+            ++argIndex;
+
+        ++argIndex;
+        }
+
+    return argIndex;
+}
