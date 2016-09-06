@@ -15,7 +15,7 @@ scanner.o : scanner.c scanner.h
 	gcc -Wall -std=c99 -g -c scanner.c
 fatal.o : fatal.c fatal.h scanner.h
 	gcc -Wall -std=c99 -g -c fatal.c
-equationConverter.o : equationConverter.h stack.h queue.h
+equationConverter.o : equationConverter.c equationConverter.h stack.h queue.h
 	gcc -Wall -std=c99 -g -c equationConverter.c
 calculon.o : calculon.c stack.h queue.h value.h scanner.h equationConverter.h
 	gcc -Wall -std=c99 -g -c calculon.c

@@ -15,9 +15,12 @@ extern int VARIABLE;
 extern int OPERATOR;
 extern int SEMICOLON;
 
+extern int EQUALS;
 extern int PARENTHESES;
-extern int ADD_SUB;
-extern int MULT_DIV;
+extern int ADD;
+extern int SUB;
+extern int MULT;
+extern int DIV;
 
 extern Value *newValueInt(int);
 extern Value *newValueDouble(double);

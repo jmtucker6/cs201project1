@@ -9,34 +9,49 @@
 #include "fatal.h"
 #include "equationConverter.h"
 
+static Value *processExpression(Queue *);
 static Value *readValue(FILE *);
 static void printValue(Value *);
 static bool commandLineHasFilename(int, char**);
 static char *getFileName(int, char**);
 int ProcessOptions(int, char**);
 
+bool dFlag = false;
 int main (int argc, char** argv) {
-
+    Value *result = NULL;
+    Queue *postFix = NULL;
     ProcessOptions(argc, argv);
     FILE *fp = NULL;
     if (commandLineHasFilename(argc, argv))
         fp = fopen(getFileName(argc, argv), "r");
-    else
+    else {
         fp = stdin;
-    printf("Enter an equation: ");
+        printf("Enter an equation: ");
+    }
     Queue *inputQueue = newQueue();
     Value *tempValue = NULL;
     while(!feof(fp)) {
-        if ((tempValue = readValue(fp)) != NULL)
+        if ((tempValue = readValue(fp)) != NULL) {
             enqueue(inputQueue, tempValue);
+            if (tempValue -> type == SEMICOLON) {
+                postFix = convertToPostfix(inputQueue);
+                result = processExpression(postFix);
+            }
+        }
     }
-    printf("Queue loaded\n");
-    Queue *postFix = convertToPostfix(inputQueue);
     while(!isEmptyQueue(postFix)) {
         printValue(dequeue(postFix));
     }
+    printf("\n%d\n", result -> ival);
     return 0;
 };
+
+/*
+ * Processes a postfix expression
+ */
+static Value *processExpression(Queue *q) {
+    return q -> head -> val;
+}
 
 /*
  * Reads in a value from a file
@@ -72,12 +87,11 @@ static Value *readValue(FILE *fp) {
  */
 static void printValue(Value *value) {
     if (value -> type == INTEGER)
-        printf("%d\n", value -> ival);
+        printf("%d ", value -> ival);
     else if (value -> type == DOUBLE)
-        printf ("%f\n", value -> dval);
+        printf ("%f ", value -> dval);
     else
-        printf("%s\n", value -> sval);
-    printf("Type: %d\n", value -> type);
+        printf("%s ", value -> sval);
 };
 
 /*
@@ -90,6 +104,7 @@ static bool commandLineHasFilename(int argc, char **argv) {
     while (argIndex < argc) {
         if (argv[argIndex][0] != '-')
             return true;
+        argIndex++;
     }
     return false;
 
@@ -103,6 +118,7 @@ static char *getFileName(int argc, char **argv) {
     while (argIndex < argc) {
         if (argv[argIndex][0] != '-')
             return argv[argIndex];
+        argIndex++;
     }
     Fatal("No filename found");
     return NULL;
@@ -119,7 +135,6 @@ ProcessOptions(int argc, char **argv)
     int argIndex;
     int argUsed;
     int separateArg;
-    char *arg;
 
     argIndex = 1;
 
@@ -133,12 +148,7 @@ ProcessOptions(int argc, char **argv)
         argUsed = 0;
 
         if (argv[argIndex][2] == '\0')
-            {
-            arg = argv[argIndex+1];
             separateArg = 1;
-            }
-        else
-            arg = argv[argIndex]+2;
 
         switch (argv[argIndex][1])
             {
@@ -166,11 +176,8 @@ ProcessOptions(int argc, char **argv)
                 printf("Jacob Tucker\n");
                 exit(1);
                 break;
-            case 's':
-                break;
-            case 'N':
-                printf("%s\n", arg);
-                argUsed = 1;
+            case 'd':
+                dFlag = true;
                 break;
             default:
                 Fatal("option %s not understood\n",argv[argIndex]);

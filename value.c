@@ -18,9 +18,12 @@ int SEMICOLON = 5;
  * CONSTANT PRECEDENCE LEVELS
  */
 
-int PARENTHESES = 1;
-int ADD_SUB = 2;
-int MULT_DIV = 3;
+int EQUALS = 0;
+int PARENTHESES = 10;
+int ADD = 2;
+int SUB = 3;
+int MULT = 4;
+int DIV = 5;
 
 /*
  * PUBLIC FUNCTIONS
@@ -68,10 +71,16 @@ Value *newValueVariable(char *s) {
 Value *newValueOperator(char *s) {
     Value *val = newValue(OPERATOR);
     val -> sval = s;
-    if (*s == '+' || *s == '-')
-        val -> ival = ADD_SUB;
+    if (*s == '+')
+        val -> ival = ADD;
+    else if (*s == '-')
+        val -> ival = SUB;
     else if (*s == '*' || *s == '/')
-        val -> ival = MULT_DIV;
+        val -> ival = MULT;
+    else if (*s == '/')
+        val -> ival = DIV;
+    else if (*s == '=')
+        val -> ival = EQUALS;
     else 
         val -> ival = PARENTHESES;
     return val;
