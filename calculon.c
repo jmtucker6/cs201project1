@@ -174,7 +174,7 @@ ProcessOptions(int argc, char **argv)
 
             case 'v':
                 printf("Jacob Tucker\n");
-                exit(1);
+                exit(0);
                 break;
             case 'd':
                 dFlag = true;

@@ -21,5 +21,9 @@ calculon.o : calculon.c stack.h queue.h value.h scanner.h equationConverter.h
 	gcc -Wall -std=c99 -g -c calculon.c
 valueTest : value.o scanner.o value.h scanner.h
 	gcc -Wall -std=c99 -g test/valueTest.c scanner.o value.o -o test/valueTest
+test : calculon
+	./calculon testFile
+	./calculon -v
+	@echo "Testing complete!"
 clean:
 	rm -f $(objects) $(executables)
