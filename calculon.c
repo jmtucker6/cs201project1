@@ -8,8 +8,8 @@
 #include "scanner.h"
 #include "fatal.h"
 #include "equationConverter.h"
+#include "processEquation.h"
 
-static Value *processExpression(Queue *);
 static Value *readValue(FILE *);
 static void printValue(Value *);
 static bool commandLineHasFilename(int, char**);
@@ -26,7 +26,6 @@ int main (int argc, char** argv) {
         fp = fopen(getFileName(argc, argv), "r");
     else {
         fp = stdin;
-        printf("Enter an equation: ");
     }
     Queue *inputQueue = newQueue();
     Value *tempValue = NULL;
@@ -35,23 +34,17 @@ int main (int argc, char** argv) {
             enqueue(inputQueue, tempValue);
             if (tempValue -> type == SEMICOLON) {
                 postFix = convertToPostfix(inputQueue);
-                result = processExpression(postFix);
+                result = processEquation(postFix);
             }
         }
     }
     while(!isEmptyQueue(postFix)) {
         printValue(dequeue(postFix));
     }
-    printf("\n%d\n", result -> ival);
+    printValue(result);
+    printf("\n");
     return 0;
 };
-
-/*
- * Processes a postfix expression
- */
-static Value *processExpression(Queue *q) {
-    return q -> head -> val;
-}
 
 /*
  * Reads in a value from a file

@@ -1,8 +1,10 @@
 #include "processEquation.h"
+#include "stack.h"
 #include "fatal.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 
 static Value *add(Value *, Value *);
 static Value *sub(Value *, Value *);
@@ -42,7 +44,7 @@ static Value *modIntString(Value *, Value *);
 static Value *modStringInt(Value *, Value *);
 static Value *powIntInt(Value *, Value *);
 static Value *powIntDouble(Value *, Value *);
-static Value *poweDoubleInt(Value *, Value *);
+static Value *powDoubleInt(Value *, Value *);
 static Value *powDoubleDouble(Value *, Value *);
 static Value *powStringInt(Value *, Value *);
 static Value *powIntString(Value *, Value *);
@@ -50,7 +52,36 @@ static Value *powStringDouble(Value *, Value *);
 static Value *powDoubleString(Value *, Value *);
 static char *concat(char *, char *);
 
-Value *processEquation(Queue *);
+Value *processEquation(Queue *postFixQueue) {
+    Value *v = NULL;
+    Value *val1 = NULL;
+    Value *val2 = NULL;
+    Stack *stack = newStack();
+    while(!isEmptyQueue(postFixQueue)) {
+        v = dequeue(postFixQueue);
+        if (v -> type == OPERATOR) {
+            val2 = pop(stack);
+            val1 = pop(stack);
+            if (*(v -> sval) == '+')
+                push(stack, add(val1, val2));
+            else if (*(v -> sval) == '-')
+                push(stack, sub(val1, val2));
+            else if(*(v -> sval) == '*')
+                push(stack, mult(val1, val2));
+            else if(*(v -> sval) == '/')
+                push(stack, divide(val1, val2));
+            else if(*(v -> sval) == '%')
+                push(stack, mod(val1, val2));
+            else if(*(v -> sval) == '^')
+                push(stack, power(val1, val2));
+            else
+                Fatal("Operator %s is not implemented.\n", v ->sval);
+        } else {
+            push(stack, v);
+        };
+    };
+    return pop(stack);
+};
 
 /*
  * PRIVATE FUNCTIONS
@@ -105,7 +136,7 @@ static Value *sub(Value *val1, Value *val2) {
         else if (val2 -> type == DOUBLE)
             return subStringDouble(val1, val2);
         else
-            Fatal("Cannot subtract strings");
+            Fatal("Cannot subtract strings\n");
     };
     return NULL;
 };
@@ -128,15 +159,87 @@ static Value *mult(Value *val1, Value *val2) {;
         if (val2 -> type == INTEGER)
             return multStringInt(val1, val2);
         else if (val2 -> type == DOUBLE)
-            return subStringDouble(val1, val2);
+            return multStringDouble(val1, val2);
         else
-            Fatal("Cannot multiply strings");
+            Fatal("Cannot multiply strings\n");
     };
     return NULL;
 };
-static Value *divide(Value *val1, Value *val2);
-static Value *mod(Value *val1, Value *val2);
-static Value *power(Value *val1, Value *val2);
+static Value *divide(Value *val1, Value *val2) {
+    if (val1 -> type == INTEGER) {
+        if (val2 -> type == INTEGER)
+            return divIntInt(val1, val2);
+        else if (val2 -> type == DOUBLE)
+            return divIntDouble(val1, val2);
+        else
+            return divIntString(val1, val2);
+    } else if (val1 -> type == DOUBLE) {
+        if (val2 -> type == INTEGER)
+            return divDoubleInt(val1, val2);
+        else if (val2 -> type == DOUBLE)
+            return divDoubleDouble(val1, val2);
+        else
+            return divDoubleString(val1, val2);
+    } else {
+        if (val2 -> type == INTEGER)
+            return divStringInt(val1, val2);
+        else if (val2 -> type == DOUBLE)
+            return divStringDouble(val1, val2);
+        else
+            Fatal("Cannot divide strings\n");
+    };
+    return NULL;
+};
+static Value *mod(Value *val1, Value *val2) {
+    if (val1 -> type == INTEGER) {
+        if (val2 -> type == INTEGER)
+            return modIntInt(val1, val2);
+        else if (val2 -> type == DOUBLE)
+            Fatal("Cannot mod by double\n");
+        else
+            return modIntString(val1, val2);
+    } else if (val1 -> type == DOUBLE) {
+        if (val2 -> type == INTEGER)
+            Fatal("Cannot mod a double\n");
+        else if (val2 -> type == DOUBLE)
+            Fatal("Cannot mod a double by a double\n");
+        else
+            Fatal("Cannot mod a double\n");
+    } else {
+        if (val2 -> type == INTEGER)
+            return modStringInt(val1, val2);
+        else if (val2 -> type == DOUBLE)
+            Fatal("Cannot mod by double\n");
+        else
+            Fatal("Cannot mod strings");
+    };
+    return NULL;
+};
+static Value *power(Value *val1, Value *val2) {
+    if (val1 -> type == INTEGER) {
+        if (val2 -> type == INTEGER)
+            return powIntInt(val1, val2);
+        else if (val2 -> type == DOUBLE)
+            return powIntDouble(val1, val2);
+        else
+            return powIntString(val1, val2);
+    } else if (val1 -> type == DOUBLE) {
+        if (val2 -> type == INTEGER)
+            return powDoubleInt(val1, val2);
+        else if (val2 -> type == DOUBLE)
+            return powDoubleDouble(val1, val2);
+        else
+            return powDoubleString(val1, val2);
+    } else {
+        if (val2 -> type == INTEGER)
+            return powStringInt(val1, val2);
+        else if (val2 -> type == DOUBLE)
+            return powStringDouble(val1, val2);
+        else
+            Fatal("Cannot exponent strings\n");
+    };
+    return NULL;
+};
 static Value *addIntInt(Value *val1, Value *val2) {
     return newValueInt(val1 -> ival + val2 -> ival);
 };
@@ -194,25 +297,63 @@ static Value *multStringDouble(Value *val1, Value *val2) {
 static Value *multDoubleDouble(Value *val1, Value *val2) {
     return newValueDouble(val1 -> dval * val2 -> dval);
 };
-static Value *divIntInt(Value *val1, Value *val2);
-static Value *divIntDouble(Value *val1, Value *val2);
-static Value *divDoubleInt(Value *val1, Value *val2);
-static Value *divStringInt(Value *val1, Value *val2);
-static Value *divIntString(Value *val1, Value *val2);
-static Value *divStringDouble(Value *val1, Value *val2);
-static Value *divDoubleString(Value *val1, Value *val2);
-static Value *divDoubleDouble(Value *val1, Value *val2);
-static Value *modIntInt(Value *val1, Value *val2);
-static Value *modIntString(Value *val1, Value *val2);
-static Value *modStringInt(Value *val1, Value *val2);
-static Value *powIntInt(Value *val1, Value *val2);
-static Value *powIntDouble(Value *val1, Value *val2);
-static Value *poweDoubleInt(Value *val1, Value *val2);
-static Value *powDoubleDouble(Value *val1, Value *val2);
-static Value *powStringInt(Value *val1, Value *val2);
-static Value *powIntString(Value *val1, Value *val2);
-static Value *powStringDouble(Value *val1, Value *val2);
-static Value *powDoubleString(Value *val1, Value *val2);
+static Value *divIntInt(Value *val1, Value *val2) {
+    return newValueInt(val1 -> ival / val2 -> ival);
+};
+static Value *divIntDouble(Value *val1, Value *val2) {
+    return newValueDouble(val1 -> ival / val2 -> dval);
+};
+static Value *divDoubleInt(Value *val1, Value *val2) {
+    return newValueDouble(val1 -> dval / val2 -> ival);
+};
+static Value *divStringInt(Value *val1, Value *val2) {
+    return newValueInt(atoi(val1 -> sval) / val2 -> ival);
+};
+static Value *divIntString(Value *val1, Value *val2) {
+    return newValueInt(val1 -> ival / atoi(val2 -> sval));
+};
+static Value *divStringDouble(Value *val1, Value *val2) {
+    return newValueDouble(atof(val1 -> sval) / val2 -> dval);
+};
+static Value *divDoubleString(Value *val1, Value *val2) {
+    return newValueDouble(val1 -> dval / atof(val2 -> sval));
+};
+static Value *divDoubleDouble(Value *val1, Value *val2) {
+    return newValueDouble(val1 -> dval / val2 -> dval);
+};
+static Value *modIntInt(Value *val1, Value *val2) {
+    return newValueInt(val1 -> ival % val2 -> ival);
+};
+static Value *modIntString(Value *val1, Value *val2) {
+    return newValueInt(val1 -> ival % atoi(val2 -> sval));
+};
+static Value *modStringInt(Value *val1, Value *val2) {
+    return newValueInt(atoi(val1 -> sval) % val2 -> ival);
+};
+static Value *powIntInt(Value *val1, Value *val2) {
+    return newValueDouble(pow((double) val1 -> ival, (double) val2 -> ival));
+};
+static Value *powIntDouble(Value *val1, Value *val2) {
+    return newValueDouble(pow((double) val1 -> ival, val2 -> dval));
+};
+static Value *powDoubleInt(Value *val1, Value *val2){
+    return newValueDouble(pow(val1 -> dval, (double) val2 -> ival));
+};
+static Value *powDoubleDouble(Value *val1, Value *val2) {
+    return newValueDouble(pow(val1 -> dval, val2 -> dval));
+};
+static Value *powStringInt(Value *val1, Value *val2) {
+    return newValueDouble(pow(atof(val1 -> sval), (double) val2 -> ival));
+};
+static Value *powIntString(Value *val1, Value *val2) {
+    return newValueDouble(pow((double) val1 -> ival, atof(val2 -> sval)));
+};
+static Value *powStringDouble(Value *val1, Value *val2) {
+    return newValueDouble(pow(atof(val1 -> sval), val2 -> dval));
+};
+static Value *powDoubleString(Value *val1, Value *val2) {
+    return newValueDouble(pow(val1 -> dval, atof(val2 -> sval)));
+};
 static char *concat(char *a, char *b) {
     char *c = malloc(sizeof(char) * (strlen(a) + strlen(b) + 1));
     if (c == NULL)
