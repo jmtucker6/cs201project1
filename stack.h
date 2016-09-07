@@ -7,7 +7,6 @@
 
 typedef struct stack {
     Node *top;
-    int priority;
 } Stack;
 
 extern void push(Stack *, Value *);

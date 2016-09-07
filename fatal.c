@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include "scanner.h"
 
 void Fatal(char *fmt, ...)
     {

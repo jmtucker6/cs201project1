@@ -35,7 +35,6 @@ Value *pop(Stack *s) {
 Stack *newStack(void) {
     Stack *s = malloc(sizeof(Stack));
     s -> top = NULL;
-    s -> priority = 0;
     return s;
 };
 
