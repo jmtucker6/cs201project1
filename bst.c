@@ -3,6 +3,7 @@
 #include "fatal.h"
 #include <string.h>
 
+static TreeNode *findNode(TreeNode *, Value *);
 /*
  * PUBLIC FUNCTIONS
  */
@@ -22,6 +23,8 @@ TreeNode *insertTreeNode(TreeNode *treeNode, Value *key, Value *data) {
 };
 
 Value *findValue(TreeNode *treeNode, Value *key) {
+    if (isEmptyTree(treeNode))
+        return NULL;
     int comp = strcmp(key->sval, treeNode -> key -> sval);
     if (comp > 0) {
         return findValue(treeNode -> right, key);
@@ -31,6 +34,15 @@ Value *findValue(TreeNode *treeNode, Value *key) {
         return treeNode -> data;
     }
     return NULL;
+};
+
+TreeNode *changeNodeData(TreeNode *treeNode ,Value *key, Value *data) {
+    TreeNode *node = findNode(treeNode, key);
+    if (node == NULL) 
+        treeNode = insertTreeNode(treeNode, key, data);
+    else
+        node -> data = data;
+    return treeNode;
 };
 
 bool isEmptyTree(TreeNode *treeNode) {
@@ -52,3 +64,17 @@ TreeNode *newTreeNode(Value *key, Value *data) {
 /*
  * PRIVATE FUNCTIONS
  */
+
+static TreeNode *findNode(TreeNode *treeNode, Value *key) {
+    if (isEmptyTree(treeNode))
+        return NULL;
+    int comp = strcmp(key->sval, treeNode -> key -> sval);
+    if (comp > 0) {
+        return findNode(treeNode -> right, key);
+    } else if (comp < 0) {
+        return findNode(treeNode -> left, key);
+    } else {
+        return treeNode;
+    }
+    return NULL;
+};

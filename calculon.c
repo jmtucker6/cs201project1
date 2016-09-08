@@ -6,12 +6,13 @@
 #include "queue.h"
 #include "value.h"
 #include "scanner.h"
+#include "bst.h"
 #include "fatal.h"
 #include "equationConverter.h"
 #include "processEquation.h"
 
 static Value *readValue(FILE *);
-static void printValue(Value *);
+static void printValue(Value *, TreeNode *);
 static bool commandLineHasFilename(int, char**);
 static char *getFileName(int, char**);
 int ProcessOptions(int, char**);
@@ -21,6 +22,8 @@ int main (int argc, char** argv) {
     Value *result = NULL;
     Queue *postFix = NULL;
     Queue *tempQueue = NULL;
+    TreeNode *root = NULL;
+    root = insertTreeNode(root, newValueVariable(""), NULL); // empty root
     ProcessOptions(argc, argv);
     FILE *fp = NULL;
     if (commandLineHasFilename(argc, argv))
@@ -36,16 +39,16 @@ int main (int argc, char** argv) {
             if (tempValue -> type == SEMICOLON) {
                 postFix = convertToPostfix(inputQueue);
                 tempQueue = duplicateQueue(postFix); //queue is consumed when processed
-                result = processEquation(postFix);
+                result = processEquation(postFix, root);
             }
         }
     }
     if (dFlag == true) {
         while(!isEmptyQueue(tempQueue)) {
-            printValue(dequeue(tempQueue));
+            printValue(dequeue(tempQueue), root);
         }
     } else {
-        printValue(result);
+        printValue(result, root);
     }
     printf("\n");
     return 0;
@@ -83,7 +86,9 @@ static Value *readValue(FILE *fp) {
  *
  * Adapted from example function by John Lusth
  */
-static void printValue(Value *value) {
+static void printValue(Value *value, TreeNode *root) {
+    if (value -> type == VARIABLE)
+        value = findValue(root, value);
     if (value -> type == INTEGER)
         printf("%d ", value -> ival);
     else if (value -> type == DOUBLE)

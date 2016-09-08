@@ -1,5 +1,6 @@
 #include "processEquation.h"
 #include "stack.h"
+#include "bst.h"
 #include "fatal.h"
 #include <stdlib.h>
 #include <string.h>
@@ -12,6 +13,7 @@ static Value *mult(Value *, Value *);
 static Value *divide(Value *, Value *);
 static Value *mod(Value *, Value *);
 static Value *power(Value *, Value *);
+static Value *equals(Value *, Value *);
 static Value *addIntInt(Value *, Value *);
 static Value *addIntDouble(Value *, Value *);
 static Value *addStringString(Value *, Value *);
@@ -52,7 +54,10 @@ static Value *powStringDouble(Value *, Value *);
 static Value *powDoubleString(Value *, Value *);
 static char *concat(char *, char *);
 
-Value *processEquation(Queue *postFixQueue) {
+TreeNode *root = NULL;
+
+Value *processEquation(Queue *postFixQueue, TreeNode *treeRoot) {
+    root = treeRoot;
     Value *v = NULL;
     Value *val1 = NULL;
     Value *val2 = NULL;
@@ -74,6 +79,8 @@ Value *processEquation(Queue *postFixQueue) {
                 push(stack, mod(val1, val2));
             else if(*(v -> sval) == '^')
                 push(stack, power(val1, val2));
+            else if(*(v -> sval) == '=')
+                push(stack, equals(val1, val2));
             else
                 Fatal("Operator %s is not implemented.\n", v ->sval);
         } else {
@@ -92,6 +99,16 @@ Value *processEquation(Queue *postFixQueue) {
  * of INTEGER, DOUBLE, and STRING
  */
 static Value *add(Value *val1, Value *val2) {
+    if (val1 -> type == VARIABLE) {
+        val1 = findValue(root, val1);
+        if (val1 == NULL)
+            Fatal("Variable not initialized");
+    }
+    if (val2 -> type == VARIABLE) {
+        val2 = findValue(root, val2);
+        if (val2 == NULL)
+            Fatal("Variable not initialized");
+    }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
             return addIntInt(val1, val2);
@@ -116,6 +133,16 @@ static Value *add(Value *val1, Value *val2) {
     };
 };
 static Value *sub(Value *val1, Value *val2) {
+    if (val1 -> type == VARIABLE) {
+        val1 = findValue(root, val1);
+        if (val1 == NULL)
+            Fatal("Variable not initialized");
+    }
+    if (val2 -> type == VARIABLE) {
+        val2 = findValue(root, val2);
+        if (val2 == NULL)
+            Fatal("Variable not initialized");
+    }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
             return subIntInt(val1, val2);
@@ -141,6 +168,16 @@ static Value *sub(Value *val1, Value *val2) {
     return NULL;
 };
 static Value *mult(Value *val1, Value *val2) {;
+    if (val1 -> type == VARIABLE) {
+        val1 = findValue(root, val1);
+        if (val1 == NULL)
+            Fatal("Variable not initialized");
+    }
+    if (val2 -> type == VARIABLE) {
+        val2 = findValue(root, val2);
+        if (val2 == NULL)
+            Fatal("Variable not initialized");
+    }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
             return multIntInt(val1, val2);
@@ -166,6 +203,16 @@ static Value *mult(Value *val1, Value *val2) {;
     return NULL;
 };
 static Value *divide(Value *val1, Value *val2) {
+    if (val1 -> type == VARIABLE) {
+        val1 = findValue(root, val1);
+        if (val1 == NULL)
+            Fatal("Variable not initialized");
+    }
+    if (val2 -> type == VARIABLE) {
+        val2 = findValue(root, val2);
+        if (val2 == NULL)
+            Fatal("Variable not initialized");
+    }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
             return divIntInt(val1, val2);
@@ -191,6 +238,16 @@ static Value *divide(Value *val1, Value *val2) {
     return NULL;
 };
 static Value *mod(Value *val1, Value *val2) {
+    if (val1 -> type == VARIABLE) {
+        val1 = findValue(root, val1);
+        if (val1 == NULL)
+            Fatal("Variable not initialized");
+    }
+    if (val2 -> type == VARIABLE) {
+        val2 = findValue(root, val2);
+        if (val2 == NULL)
+            Fatal("Variable not initialized");
+    }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
             return modIntInt(val1, val2);
@@ -216,6 +273,16 @@ static Value *mod(Value *val1, Value *val2) {
     return NULL;
 };
 static Value *power(Value *val1, Value *val2) {
+    if (val1 -> type == VARIABLE) {
+        val1 = findValue(root, val1);
+        if (val1 == NULL)
+            Fatal("Variable not initialized");
+    }
+    if (val2 -> type == VARIABLE) {
+        val2 = findValue(root, val2);
+        if (val2 == NULL)
+            Fatal("Variable not initialized");
+    }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
             return powIntInt(val1, val2);
@@ -239,6 +306,10 @@ static Value *power(Value *val1, Value *val2) {
             Fatal("Cannot exponent strings\n");
     };
     return NULL;
+};
+static Value *equals(Value *var, Value *val2) {
+    root = changeNodeData(root, var, val2);
+    return val2;
 };
 static Value *addIntInt(Value *val1, Value *val2) {
     return newValueInt(val1 -> ival + val2 -> ival);

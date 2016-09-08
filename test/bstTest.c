@@ -15,6 +15,7 @@ int main(void) {
     Value *ab = newValueString("ab");
     Value *abData = newValueDouble(1.5);
     insertTreeNode(root, ab, abData);
-    printf("%d\n", findValue(root, b) -> ival);
+    changeNodeData(root, a, newValueInt(100));
+    printf("%d\n", findValue(root, a) -> ival);
     return 0;
 }
