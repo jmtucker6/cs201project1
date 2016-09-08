@@ -14,5 +14,6 @@ extern void enqueue(Queue *, Value *);
 extern Value *dequeue(Queue *);
 extern Queue *newQueue(void);
 extern bool isEmptyQueue(Queue *);
+extern Queue *duplicateQueue(Queue *);
 
 #endif

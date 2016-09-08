@@ -37,6 +37,19 @@ Value *dequeue(Queue *q) {
     free(temp);
     return v;
 };
+/*
+ * Duplicates a queue
+ */
+Queue *duplicateQueue(Queue *q) {
+    Queue *newQ = NULL;
+    newQ = newQueue();
+    Node *node = q -> head;
+    while (node != NULL) {
+        enqueue(newQ, node -> val);
+        node = node -> next;
+    }
+    return newQ;
+};
 
 /*
  * Returns an empty queue
@@ -57,3 +70,4 @@ Queue *newQueue(void) {
 bool isEmptyQueue(Queue *q) {
     return (q -> head == NULL && q -> tail == NULL) ? true : false;
 };
+

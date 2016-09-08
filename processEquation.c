@@ -292,7 +292,7 @@ static Value *multStringInt(Value *val1, Value *val2) {
     return newValueInt(atoi(val1 -> sval) * val2 -> ival);
 };
 static Value *multStringDouble(Value *val1, Value *val2) {
-    return newValueDouble(atof(val1 -> sval) * val2 -> ival);
+    return newValueDouble(atof(val1 -> sval) * val2 -> dval);
 };
 static Value *multDoubleDouble(Value *val1, Value *val2) {
     return newValueDouble(val1 -> dval * val2 -> dval);

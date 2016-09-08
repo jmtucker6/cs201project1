@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 #include <ctype.h>
 #include "stack.h"
 #include "queue.h"
@@ -20,6 +20,7 @@ bool dFlag = false;
 int main (int argc, char** argv) {
     Value *result = NULL;
     Queue *postFix = NULL;
+    Queue *tempQueue = NULL;
     ProcessOptions(argc, argv);
     FILE *fp = NULL;
     if (commandLineHasFilename(argc, argv))
@@ -34,14 +35,18 @@ int main (int argc, char** argv) {
             enqueue(inputQueue, tempValue);
             if (tempValue -> type == SEMICOLON) {
                 postFix = convertToPostfix(inputQueue);
+                tempQueue = duplicateQueue(postFix); //queue is consumed when processed
                 result = processEquation(postFix);
             }
         }
     }
-    while(!isEmptyQueue(postFix)) {
-        printValue(dequeue(postFix));
+    if (dFlag == true) {
+        while(!isEmptyQueue(tempQueue)) {
+            printValue(dequeue(tempQueue));
+        }
+    } else {
+        printValue(result);
     }
-    printValue(result);
     printf("\n");
     return 0;
 };
@@ -54,7 +59,7 @@ int main (int argc, char** argv) {
 static Value *readValue(FILE *fp) {
     Value *v;
     if (stringPending(fp))
-        v = newValueString(readToken(fp));
+        v = newValueString(readString(fp));
     else {
         char *token = readToken(fp);
         if (token == NULL)
@@ -83,6 +88,8 @@ static void printValue(Value *value) {
         printf("%d ", value -> ival);
     else if (value -> type == DOUBLE)
         printf ("%f ", value -> dval);
+    else if (value -> type == STRING)
+        printf("\"%s\" ", value -> sval);
     else
         printf("%s ", value -> sval);
 };
