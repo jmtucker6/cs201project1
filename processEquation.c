@@ -308,6 +308,11 @@ static Value *power(Value *val1, Value *val2) {
     return NULL;
 };
 static Value *equals(Value *var, Value *val2) {
+    if (val2 -> type == VARIABLE) {
+        val2 = findValue(root, val2);
+        if (val2 == NULL)
+            Fatal("Variable has not been initialized\n");
+    }
     root = changeNodeData(root, var, val2);
     return val2;
 };
