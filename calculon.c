@@ -87,7 +87,7 @@ static Value *readValue(FILE *fp) {
  * Adapted from example function by John Lusth
  */
 static void printValue(Value *value, TreeNode *root) {
-    if (value -> type == VARIABLE)
+    if (value -> type == VARIABLE && dFlag == false)
         value = findValue(root, value);
     if (value -> type == INTEGER)
         printf("%d ", value -> ival);

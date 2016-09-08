@@ -22,7 +22,7 @@ Queue *convertToPostfix(Queue *inFixQueue) {
         } else
             if (isEmptyStack(stack) || *(stack -> top -> val -> sval) == '(') {
                 push(stack, tempValue);
-            } else if (stack -> top -> val -> ival > tempValue -> ival) {
+            } else if (stack -> top -> val -> ival >= tempValue -> ival) {
                 enqueue(postFixQueue, pop(stack));
                 push(stack, tempValue);
             } else if (*(tempValue -> sval) == ')') {
