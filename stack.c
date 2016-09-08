@@ -34,6 +34,8 @@ Value *pop(Stack *s) {
  */
 Stack *newStack(void) {
     Stack *s = malloc(sizeof(Stack));
+    if (s == NULL)
+        Fatal("Out of Memory\n");
     s -> top = NULL;
     return s;
 };

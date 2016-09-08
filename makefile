@@ -28,13 +28,16 @@ valueTest : value.o scanner.o value.h scanner.h
 	gcc -Wall -std=c99 -g test/valueTest.c scanner.o value.o -o test/valueTest
 bstTest : value.o value.h bst.o bst.h
 	gcc -Wall -std=c99 -g test/bstTest.c value.o bst.o -o test/bstTest
-test : calculon bstTest
-	test/bstTest
-	./calculon test/testFile
+test : calculon
 	./calculon -v
-	./calculon test/crazyTest1
-	./calculon test/crazyTest2
-	./calculon test/crazyTest3
+	./calculon -d tests/testFile
+	./calculon tests/testFile
+	./calculon -d tests/crazyTest1
+	./calculon tests/crazyTest1
+	./calculon -d tests/crazyTest2
+	./calculon tests/crazyTest2
+	./calculon -d  tests/crazyTest3
+	./calculon tests/crazyTest3
 	@echo "Testing complete!"
 clean:
 	rm -f $(objects) $(executables)

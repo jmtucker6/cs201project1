@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include "bst.h"
 #include "fatal.h"
+#include "bst.h"
 #include <string.h>
 
 static TreeNode *findNode(TreeNode *, Value *);
@@ -54,6 +54,8 @@ bool isEmptyTree(TreeNode *treeNode) {
 TreeNode *newTreeNode(Value *key, Value *data) {
     TreeNode *treeNode = NULL;
     treeNode = malloc(sizeof(TreeNode));
+    if (treeNode == NULL)
+        Fatal("Out of Mememory\n");
     treeNode -> data = data;
     treeNode -> key = key;
     treeNode -> left = NULL;

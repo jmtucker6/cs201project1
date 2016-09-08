@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "value.h"
+#include "fatal.h"
 
 static Value *newValue(int);
 
@@ -106,6 +107,8 @@ Value *newValueSemicolon(char *s) {
  */
 static Value *newValue(int t) {
     Value *v = malloc(sizeof(Value));
+    if (v == NULL)
+        Fatal("Out of Memory");
     v -> type = t;
     v -> ival = 0;
     v -> dval = 0;
