@@ -30,8 +30,11 @@ bstTest : value.o value.h bst.o bst.h
 	gcc -Wall -std=c99 -g test/bstTest.c value.o bst.o -o test/bstTest
 test : calculon bstTest
 	test/bstTest
-	./calculon testFile
+	./calculon test/testFile
 	./calculon -v
+	./calculon test/crazyTest1
+	./calculon test/crazyTest2
+	./calculon test/crazyTest3
 	@echo "Testing complete!"
 clean:
 	rm -f $(objects) $(executables)

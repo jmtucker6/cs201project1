@@ -102,12 +102,12 @@ static Value *add(Value *val1, Value *val2) {
     if (val1 -> type == VARIABLE) {
         val1 = findValue(root, val1);
         if (val1 == NULL)
-            Fatal("Variable not initialized");
+            Fatal("Variable not initialized\n");
     }
     if (val2 -> type == VARIABLE) {
         val2 = findValue(root, val2);
         if (val2 == NULL)
-            Fatal("Variable not initialized");
+            Fatal("Variable not initialized\n");
     }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
@@ -136,12 +136,12 @@ static Value *sub(Value *val1, Value *val2) {
     if (val1 -> type == VARIABLE) {
         val1 = findValue(root, val1);
         if (val1 == NULL)
-            Fatal("Variable not initialized");
+            Fatal("Variable not initialized\n");
     }
     if (val2 -> type == VARIABLE) {
         val2 = findValue(root, val2);
         if (val2 == NULL)
-            Fatal("Variable not initialized");
+            Fatal("Variable not initialized\n");
     }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
@@ -171,12 +171,12 @@ static Value *mult(Value *val1, Value *val2) {;
     if (val1 -> type == VARIABLE) {
         val1 = findValue(root, val1);
         if (val1 == NULL)
-            Fatal("Variable not initialized");
+            Fatal("Variable not initialized\n");
     }
     if (val2 -> type == VARIABLE) {
         val2 = findValue(root, val2);
         if (val2 == NULL)
-            Fatal("Variable not initialized");
+            Fatal("Variable not initialized\n");
     }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
@@ -206,12 +206,12 @@ static Value *divide(Value *val1, Value *val2) {
     if (val1 -> type == VARIABLE) {
         val1 = findValue(root, val1);
         if (val1 == NULL)
-            Fatal("Variable not initialized");
+            Fatal("Variable not initialized\n");
     }
     if (val2 -> type == VARIABLE) {
         val2 = findValue(root, val2);
         if (val2 == NULL)
-            Fatal("Variable not initialized");
+            Fatal("Variable not initialized\n");
     }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
@@ -241,12 +241,12 @@ static Value *mod(Value *val1, Value *val2) {
     if (val1 -> type == VARIABLE) {
         val1 = findValue(root, val1);
         if (val1 == NULL)
-            Fatal("Variable not initialized");
+            Fatal("Variable not initialized\n");
     }
     if (val2 -> type == VARIABLE) {
         val2 = findValue(root, val2);
         if (val2 == NULL)
-            Fatal("Variable not initialized");
+            Fatal("Variable not initialized\n");
     }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
@@ -268,7 +268,7 @@ static Value *mod(Value *val1, Value *val2) {
         else if (val2 -> type == DOUBLE)
             Fatal("Cannot mod by double\n");
         else
-            Fatal("Cannot mod strings");
+            Fatal("Cannot mod strings\n");
     };
     return NULL;
 };
@@ -276,12 +276,12 @@ static Value *power(Value *val1, Value *val2) {
     if (val1 -> type == VARIABLE) {
         val1 = findValue(root, val1);
         if (val1 == NULL)
-            Fatal("Variable not initialized");
+            Fatal("Variable not initialized\n");
     }
     if (val2 -> type == VARIABLE) {
         val2 = findValue(root, val2);
         if (val2 == NULL)
-            Fatal("Variable not initialized");
+            Fatal("Variable not initialized\n");
     }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
@@ -407,7 +407,7 @@ static Value *modStringInt(Value *val1, Value *val2) {
     return newValueInt(atoi(val1 -> sval) % val2 -> ival);
 };
 static Value *powIntInt(Value *val1, Value *val2) {
-    return newValueDouble(pow((double) val1 -> ival, (double) val2 -> ival));
+    return newValueInt((int) pow((double) val1 -> ival, (double) val2 -> ival));
 };
 static Value *powIntDouble(Value *val1, Value *val2) {
     return newValueDouble(pow((double) val1 -> ival, val2 -> dval));
@@ -419,10 +419,10 @@ static Value *powDoubleDouble(Value *val1, Value *val2) {
     return newValueDouble(pow(val1 -> dval, val2 -> dval));
 };
 static Value *powStringInt(Value *val1, Value *val2) {
-    return newValueDouble(pow(atof(val1 -> sval), (double) val2 -> ival));
+    return newValueInt((int) pow(atof(val1 -> sval), (double) val2 -> ival));
 };
 static Value *powIntString(Value *val1, Value *val2) {
-    return newValueDouble(pow((double) val1 -> ival, atof(val2 -> sval)));
+    return newValueInt((int) pow((double) val1 -> ival, atof(val2 -> sval)));
 };
 static Value *powStringDouble(Value *val1, Value *val2) {
     return newValueDouble(pow(atof(val1 -> sval), val2 -> dval));

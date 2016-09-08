@@ -24,6 +24,8 @@ int ADD = 2;
 int SUB = 3;
 int MULT = 4;
 int DIV = 5;
+int MOD = 6;
+int POW = 7;
 
 /*
  * PUBLIC FUNCTIONS
@@ -81,6 +83,10 @@ Value *newValueOperator(char *s) {
         val -> ival = DIV;
     else if (*s == '=')
         val -> ival = EQUALS;
+    else if (*s == '%')
+        val -> ival = MOD;
+    else if (*s == '^')
+        val -> ival = POW;
     else 
         val -> ival = PARENTHESES;
     return val;

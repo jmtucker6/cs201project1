@@ -21,6 +21,8 @@ extern int ADD;
 extern int SUB;
 extern int MULT;
 extern int DIV;
+extern int MOD;
+extern int POW;
 
 extern Value *newValueInt(int);
 extern Value *newValueDouble(double);
