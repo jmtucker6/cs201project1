@@ -3,6 +3,13 @@
 #include "fatal.h"
 
 /*
+ * stack.c
+ *
+ * Implementation of stack objects
+ * Written by Jacob Tucker
+ */
+
+/*
  * PUBLIC FUNCTIONS
  */
 
@@ -40,11 +47,10 @@ Stack *newStack(void) {
     return s;
 };
 
+/*
+ * Returns if the stack is empty
+ */
 bool isEmptyStack(Stack *s) {
     return (s -> top == NULL) ? true : false;
 };
-
-/*
- * PRIVATE FUNCTIONS
- */
 

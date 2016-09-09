@@ -3,11 +3,22 @@
 #include "bst.h"
 #include <string.h>
 
+/*
+ * bst.c
+ *
+ * Implementation of a standard binary search tree
+ *
+ * Written by Jacob Tucker
+ */
+
 static TreeNode *findNode(TreeNode *, Value *);
 /*
  * PUBLIC FUNCTIONS
  */
 
+/*
+ * Inserts a key-data pair into the binary search tree
+ */
 TreeNode *insertTreeNode(TreeNode *treeNode, Value *key, Value *data) {
     if (treeNode == NULL) {
         treeNode = newTreeNode(key, data);
@@ -22,6 +33,9 @@ TreeNode *insertTreeNode(TreeNode *treeNode, Value *key, Value *data) {
     }
 };
 
+/*
+ * Returns the data paired with the given key
+ */
 Value *findValue(TreeNode *treeNode, Value *key) {
     if (isEmptyTree(treeNode))
         return NULL;
@@ -36,6 +50,9 @@ Value *findValue(TreeNode *treeNode, Value *key) {
     return NULL;
 };
 
+/*
+ * Pairs the key with a different data value
+ */
 TreeNode *changeNodeData(TreeNode *treeNode ,Value *key, Value *data) {
     TreeNode *node = findNode(treeNode, key);
     if (node == NULL) 
@@ -45,12 +62,18 @@ TreeNode *changeNodeData(TreeNode *treeNode ,Value *key, Value *data) {
     return treeNode;
 };
 
+/*
+ * Returns if the tree is empty
+ */
 bool isEmptyTree(TreeNode *treeNode) {
     if (treeNode == NULL)
         return true;
     return false;
 };
 
+/*
+ * Creates a key-data pair
+ */
 TreeNode *newTreeNode(Value *key, Value *data) {
     TreeNode *treeNode = NULL;
     treeNode = malloc(sizeof(TreeNode));
@@ -67,6 +90,9 @@ TreeNode *newTreeNode(Value *key, Value *data) {
  * PRIVATE FUNCTIONS
  */
 
+/*
+ * Returns the node assosciated with its key
+ */
 static TreeNode *findNode(TreeNode *treeNode, Value *key) {
     if (isEmptyTree(treeNode))
         return NULL;

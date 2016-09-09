@@ -3,9 +3,19 @@
 #include <stdlib.h>
 
 /*
- * PUBLIC FUNDTIONS
+ * node.c
+ *
+ * Implementation of node objects
+ * Written by Jacob Tucker
  */
 
+/*
+ * PUBLIC FUNCTIONS
+ */
+
+/*
+ * Creates an empty node
+ */
 Node *newNode(Value *v) {
     Node *node = malloc(sizeof(Node));
     if (node == 0)

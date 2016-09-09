@@ -11,6 +11,19 @@
 #include "equationConverter.h"
 #include "processEquation.h"
 
+/*
+ * calculon.c
+ *
+ * Main driver for calculon
+ * Takes input from terminal or file
+ * Outputs results to terminal
+ *
+ * -d prints the postfix of the last expression
+ * -v prints the author
+ *
+ *  Written by Jacob Tucker
+ */
+
 static Value *readValue(FILE *);
 static void printValue(Value *, TreeNode *);
 static bool commandLineHasFilename(int, char**);

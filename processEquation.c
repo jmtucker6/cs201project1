@@ -7,6 +7,15 @@
 #include <stdio.h>
 #include <math.h>
 
+/* processEquation.c
+ *
+ * Reduces a postfix queue to a single equivalent value
+ *
+ * Helper functions are self explanatory
+ * Written by Jacob Tucker
+ *
+ */
+
 static Value *add(Value *, Value *);
 static Value *sub(Value *, Value *);
 static Value *mult(Value *, Value *);
@@ -53,9 +62,13 @@ static Value *powIntString(Value *, Value *);
 static Value *powStringDouble(Value *, Value *);
 static Value *powDoubleString(Value *, Value *);
 static char *concat(char *, char *);
+static Value *isInitialized(Value *);
 
 TreeNode *root = NULL;
 
+/*
+ * Reduces a queue of values down to one value by applying its operators
+ */
 Value *processEquation(Queue *postFixQueue, TreeNode *treeRoot) {
     root = treeRoot;
     Value *v = NULL;
@@ -100,14 +113,10 @@ Value *processEquation(Queue *postFixQueue, TreeNode *treeRoot) {
  */
 static Value *add(Value *val1, Value *val2) {
     if (val1 -> type == VARIABLE) {
-        val1 = findValue(root, val1);
-        if (val1 == NULL)
-            Fatal("Variable not initialized\n");
+        val1 = isInitialized(val1);
     }
     if (val2 -> type == VARIABLE) {
-        val2 = findValue(root, val2);
-        if (val2 == NULL)
-            Fatal("Variable not initialized\n");
+        val2 = isInitialized(val2);
     }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
@@ -132,16 +141,17 @@ static Value *add(Value *val1, Value *val2) {
             return addStringString(val1, val2);
     };
 };
+
+/*
+ * Calls subtraction helper function for every combination 
+ * of INTEGER, DOUBLE, and STRING
+ */
 static Value *sub(Value *val1, Value *val2) {
     if (val1 -> type == VARIABLE) {
-        val1 = findValue(root, val1);
-        if (val1 == NULL)
-            Fatal("Variable not initialized\n");
+        val1 = isInitialized(val1);
     }
     if (val2 -> type == VARIABLE) {
-        val2 = findValue(root, val2);
-        if (val2 == NULL)
-            Fatal("Variable not initialized\n");
+        val2 = isInitialized(val2);
     }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
@@ -167,16 +177,17 @@ static Value *sub(Value *val1, Value *val2) {
     };
     return NULL;
 };
+
+/*
+ * Calls multiply helper function for every combination 
+ * of INTEGER, DOUBLE, and STRING
+ */
 static Value *mult(Value *val1, Value *val2) {;
     if (val1 -> type == VARIABLE) {
-        val1 = findValue(root, val1);
-        if (val1 == NULL)
-            Fatal("Variable not initialized\n");
+        val1 = isInitialized(val1);
     }
     if (val2 -> type == VARIABLE) {
-        val2 = findValue(root, val2);
-        if (val2 == NULL)
-            Fatal("Variable not initialized\n");
+        val2 = isInitialized(val2);
     }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
@@ -202,16 +213,17 @@ static Value *mult(Value *val1, Value *val2) {;
     };
     return NULL;
 };
+
+/*
+ * Calls divide helper function for every combination 
+ * of INTEGER, DOUBLE, and STRING
+ */
 static Value *divide(Value *val1, Value *val2) {
     if (val1 -> type == VARIABLE) {
-        val1 = findValue(root, val1);
-        if (val1 == NULL)
-            Fatal("Variable not initialized\n");
+        val1 = isInitialized(val1);
     }
     if (val2 -> type == VARIABLE) {
-        val2 = findValue(root, val2);
-        if (val2 == NULL)
-            Fatal("Variable not initialized\n");
+        val2 = isInitialized(val2);
     }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
@@ -237,16 +249,17 @@ static Value *divide(Value *val1, Value *val2) {
     };
     return NULL;
 };
+
+/*
+ * Calls mod helper function for every combination 
+ * of INTEGER, DOUBLE, and STRING
+ */
 static Value *mod(Value *val1, Value *val2) {
     if (val1 -> type == VARIABLE) {
-        val1 = findValue(root, val1);
-        if (val1 == NULL)
-            Fatal("Variable not initialized\n");
+        val1 = isInitialized(val1);
     }
     if (val2 -> type == VARIABLE) {
-        val2 = findValue(root, val2);
-        if (val2 == NULL)
-            Fatal("Variable not initialized\n");
+        val2 = isInitialized(val2);
     }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
@@ -272,16 +285,17 @@ static Value *mod(Value *val1, Value *val2) {
     };
     return NULL;
 };
+
+/*
+ * Calls power helper function for every combination 
+ * of INTEGER, DOUBLE, and STRING
+ */
 static Value *power(Value *val1, Value *val2) {
     if (val1 -> type == VARIABLE) {
-        val1 = findValue(root, val1);
-        if (val1 == NULL)
-            Fatal("Variable not initialized\n");
+        val1 = isInitialized(val1);
     }
     if (val2 -> type == VARIABLE) {
-        val2 = findValue(root, val2);
-        if (val2 == NULL)
-            Fatal("Variable not initialized\n");
+        val2 = isInitialized(val2);
     }
     if (val1 -> type == INTEGER) {
         if (val2 -> type == INTEGER)
@@ -307,15 +321,21 @@ static Value *power(Value *val1, Value *val2) {
     };
     return NULL;
 };
+
+/*
+ * Handles variable assignment
+ */
 static Value *equals(Value *var, Value *val2) {
     if (val2 -> type == VARIABLE) {
-        val2 = findValue(root, val2);
-        if (val2 == NULL)
-            Fatal("Variable has not been initialized\n");
+        val2 = isInitialized(val2);
     }
     root = changeNodeData(root, var, val2);
     return val2;
 };
+
+/*
+ * Helper Functions
+ */
 static Value *addIntInt(Value *val1, Value *val2) {
     return newValueInt(val1 -> ival + val2 -> ival);
 };
@@ -438,3 +458,9 @@ static char *concat(char *a, char *b) {
     return c;
 };
 
+static Value *isInitialized(Value *v) {
+    Value *tempVariable = findValue(root, v);
+    if (tempVariable == NULL)
+        Fatal("Variable %s was not declared\n", v -> sval);
+    return tempVariable;
+};

@@ -4,6 +4,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+/*
+ * equationConverter.c
+ *
+ * Takes an infix queue and returns its equivalent postfix queue
+ * Written by Jacob Tucker
+ *
+ */
 Queue *convertToPostfix(Queue *inFixQueue) {
     Stack *stack = NULL;
     stack = newStack();
@@ -22,7 +29,9 @@ Queue *convertToPostfix(Queue *inFixQueue) {
         } else
             if (isEmptyStack(stack) || *(stack -> top -> val -> sval) == '(') {
                 push(stack, tempValue);
-            } else if (stack -> top -> val -> ival >= tempValue -> ival) {
+            } 
+        /* Checks if operator on top of the stack has a higher precedence */
+            else if (stack -> top -> val -> ival >= tempValue -> ival) {
                 enqueue(postFixQueue, pop(stack));
                 push(stack, tempValue);
             } else if (*(tempValue -> sval) == ')') {
@@ -33,6 +42,7 @@ Queue *convertToPostfix(Queue *inFixQueue) {
                 push(stack, tempValue);
             }
     }
+    /* Appends the remainder of the stack to the postfix queue */
     while (!isEmptyStack(stack))
         enqueue(postFixQueue, pop(stack));
     return postFixQueue;

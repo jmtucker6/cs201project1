@@ -3,6 +3,12 @@
 #include "queue.h"
 #include "fatal.h"
 
+/*
+ * queue.c
+ *
+ * Implements queue objects
+ * Written by Jacob Tucker
+ */
 
 /*
  * PUBLIC FUNCTIONS
@@ -37,6 +43,7 @@ Value *dequeue(Queue *q) {
     free(temp);
     return v;
 };
+
 /*
  * Duplicates a queue
  */

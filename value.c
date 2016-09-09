@@ -2,6 +2,13 @@
 #include "value.h"
 #include "fatal.h"
 
+/*
+ * value.c
+ *
+ * Implementation of value objects
+ * Written by Jacob Tucker
+ */
+
 static Value *newValue(int);
 
 /*
